@@ -1,23 +1,31 @@
-import logo from './logo.svg';
+import { useEffect, useState } from 'react';
 import './App.css';
+import Cards from './componensts/Card/Cards';
+
+
+import Country from './componensts/Country/Country';
 
 function App() {
+ const [countries,setCountries] = useState([])
+ const [cart,setcart] = useState([])
+ useEffect(()=>{
+   fetch('https://restcountries.eu/rest/v2/all')
+   .then(res=>res.json())
+   .then(data=>setCountries(data))
+   .catch(error=>console.log(error))
+ },[])
+//  console.log(countries)
+const handleAddedCountry=((props)=>{
+  const newCart=[...cart,props]
+  setcart(newCart)
+})
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div>
+      <Cards cart={cart}></Cards>
+      <h1>Country : {countries.length}</h1>
+          {countries.map(country=><Country country={country} key={country.alpha3Code} handleAddedCountry={handleAddedCountry}></Country>)}
+
     </div>
   );
 }
